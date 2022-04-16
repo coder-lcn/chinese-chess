@@ -1,16 +1,28 @@
 import { useMemo } from "react";
-import { Chess } from "./App.styled";
+import { Chess, Next } from "./App.styled";
 import { ChessItem } from "./types";
 
 export const RenderChess = ({
   item,
   first,
+  next,
+  selected,
+  position,
   onClick,
+  onNext,
 }: {
   item?: ChessItem | null;
   first: Ownner;
+  next: boolean;
+  selected: number;
+  position: number;
   onClick: () => void;
+  onNext: (position: number) => void;
 }) => {
+  if (next) {
+    return <Next onClick={() => onNext(position)} />;
+  }
+
   if (!item) return null;
   if (item.alive === false) return null;
 
@@ -34,7 +46,11 @@ export const RenderChess = ({
   }, [isFirst, item]);
 
   return (
-    <Chess first={isFirst} onClick={onClick}>
+    <Chess
+      first={isFirst}
+      onClick={onClick}
+      selected={item.currPostion === selected}
+    >
       {renderChessName.type}
     </Chess>
   );
