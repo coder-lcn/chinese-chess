@@ -29,7 +29,62 @@ const renderSoldierRoad = () => css`
   border: ${cellBorder};
 `;
 
-export const Item = styled.div<{ center: boolean; soldier?: string }>`
+const renderMark = (mark?: Mark) => {
+  if (!mark) return null;
+
+  const distance = "4px";
+  const size = "10px";
+
+  const common = css`
+    content: "";
+    position: absolute;
+    width: ${size};
+    height: ${size};
+    border: ${cellBorder};
+  `;
+
+  switch (mark) {
+    case "lb":
+      return css`
+        ${common}
+        left: ${distance};
+        bottom: ${distance};
+        border-right: none;
+        border-top: none;
+      `;
+    case "lt":
+      return css`
+        ${common}
+        left: ${distance};
+        top: ${distance};
+        border-right: none;
+        border-bottom: none;
+      `;
+    case "rb":
+      return css`
+        ${common}
+        right: ${distance};
+        bottom: ${distance};
+        border-left: none;
+        border-top: none;
+      `;
+    case "rt":
+      return css`
+        ${common}
+        right: ${distance};
+        top: ${distance};
+        border-left: none;
+        border-bottom: none;
+      `;
+  }
+};
+
+export const Item = styled.div<{
+  center: boolean;
+  soldier?: string;
+  mark?: Mark;
+  markOther?: Mark;
+}>`
   text-align: center;
   line-height: ${cell};
   border-right: ${cellBorder};
@@ -65,6 +120,14 @@ export const Item = styled.div<{ center: boolean; soldier?: string }>`
         `;
     }
   }}
+
+  &::before {
+    ${({ mark }) => renderMark(mark)}
+  }
+
+  &::after {
+    ${({ markOther }) => renderMark(markOther)}
+  }
 `;
 
 export const Text = styled.div`
