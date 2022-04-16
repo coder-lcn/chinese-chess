@@ -5,9 +5,11 @@ import { ChessItem } from "./types";
 export const RenderChess = ({
   item,
   first,
+  onClick,
 }: {
   item?: ChessItem | null;
   first: Ownner;
+  onClick: () => void;
 }) => {
   if (!item) return null;
   if (item.alive === false) return null;
@@ -31,5 +33,9 @@ export const RenderChess = ({
     return item;
   }, [isFirst, item]);
 
-  return <Chess first={isFirst}>{renderChessName.type}</Chess>;
+  return (
+    <Chess first={isFirst} onClick={onClick}>
+      {renderChessName.type}
+    </Chess>
+  );
 };

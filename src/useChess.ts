@@ -257,5 +257,8 @@ const initData: Record<number, ChessItem | null> = {
 export const useChess = () => {
   const [first, setFirst] = useState<Ownner>("b");
   const [data, setData] = useState<Record<number, ChessItem | null>>(initData);
-  return { data, first };
+  const [player, setPlayer] = useState<Ownner>("b");
+  const [next, setNext] = useState([]);
+
+  return { data, first, player, next };
 };
