@@ -141,3 +141,46 @@ export const Text = styled.div`
   justify-content: space-around;
   color: #7d7d7d;
 `;
+
+export const VirtualChessBoard = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-columns: repeat(9, ${cell});
+  grid-template-rows: repeat(10, ${cell});
+`;
+
+export const VirtualItem = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const Chess = styled.div<{ first: boolean }>`
+  position: relative;
+  background-color: #ccc;
+  width: 75%;
+  height: 75%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  color: ${({ first }) => (first ? "red" : "#000")};
+  box-shadow: 4px 4px 4px #a49e9e;
+  cursor: pointer;
+  font-size: 24px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    border-radius: 100%;
+    border: 1px solid ${({ first }) => (first ? "red" : "#000")};
+  }
+`;
