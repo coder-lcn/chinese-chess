@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-const cell = "60px";
+const cell = "70px";
 const cellBorder = "1px solid #fff";
 
 export const Container = styled.div`
@@ -8,7 +8,6 @@ export const Container = styled.div`
   background-color: #eee;
   padding: 50px;
   border-radius: 10px;
-  box-shadow: 10px 10px 10px #ddd;
 `;
 
 export const Wrapper = styled.div`

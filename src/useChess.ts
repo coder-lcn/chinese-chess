@@ -261,5 +261,15 @@ export const useChess = () => {
   const [next, setNext] = useState<number[]>([]);
   const [selected, setSelected] = useState<number>(-1);
 
-  return { data, first, player, next, selected, setSelected, setNext, setData };
+  return {
+    data,
+    first,
+    player,
+    next,
+    selected,
+    setSelected,
+    setNext,
+    setData,
+    setPlayer,
+  };
 };

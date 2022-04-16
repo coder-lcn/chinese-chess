@@ -7,7 +7,7 @@ import { useChess } from "./useChess";
 import { batchRender, debounce, ChessLog } from "./utils";
 
 function App() {
-  const { data, first, player, next, setNext, selected, setSelected, setData } =
+  const { data, first, player, next, setNext, selected, setSelected } =
     useChess();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const moved = useRef<[number, number] | null>(null);
@@ -16,8 +16,10 @@ function App() {
   const selectChess = (item: ChessItem) => {
     if (loading.current) return;
     if (item.ownner !== player) return;
-    setSelected(item.currPostion);
     loading.current = true;
+
+    setNext([]);
+    setSelected(item.currPostion);
 
     switch (item.type) {
       case "兵": {
@@ -77,8 +79,6 @@ function App() {
 
       data[end] = data[start];
       data[start] = null;
-
-      setData({ ...data });
 
       ChessLog({
         start,
