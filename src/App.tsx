@@ -4,33 +4,33 @@ import { Checkerboard } from "./checkerboard";
 import { RenderChess } from "./renderChess";
 import { ChessItem } from "./types";
 import { useChess } from "./useChess";
-import { batchRender, debounce, ChessLog } from "./utils";
+import { batchRender, debounce, ChessLog, toOneRow } from "./utils";
 
 function App() {
-  const { data, first, player, next, setNext, selected, setSelected } =
-    useChess();
+  const { data, playing, next, setNext, selected, setSelected, setPlaying } = useChess();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const moved = useRef<[number, number] | null>(null);
+  // 棋子正在移动
   const loading = useRef(false);
 
   const selectChess = (item: ChessItem) => {
     if (loading.current) return;
-    if (item.ownner !== player) return;
-    loading.current = true;
 
+    loading.current = true;
     setNext([]);
     setSelected(item.currPostion);
 
     switch (item.type) {
       case "兵": {
-        const targetPosition = item.currPostion - 9;
+        const targetPosition = toOneRow(item.currPostion, true);
+
         if (targetPosition >= 0) {
           setNext([targetPosition]);
         }
         break;
       }
       case "卒": {
-        const targetPosition = item.currPostion + 9;
+        const targetPosition = toOneRow(item.currPostion, false);
         if (targetPosition >= 0) {
           setNext([targetPosition]);
         }
@@ -49,11 +49,9 @@ function App() {
     const lastElement = containerRef.current.children[selected];
     if (!lastElement) return;
 
-    const { left: targetLeft, top: targetTop } =
-      nextElement.firstElementChild!.getBoundingClientRect();
+    const { left: targetLeft, top: targetTop } = nextElement.firstElementChild!.getBoundingClientRect();
 
-    const { left: sourceLeft, top: sourceTop } =
-      lastElement.firstElementChild!.getBoundingClientRect();
+    const { left: sourceLeft, top: sourceTop } = lastElement.firstElementChild!.getBoundingClientRect();
 
     let x = targetLeft - sourceLeft - 2;
     if (Math.abs(x) < 20) x = 0;
@@ -61,9 +59,7 @@ function App() {
     let y = targetTop - sourceTop - 6;
     if (Math.abs(y) < 20) y = 0;
 
-    (
-      lastElement.firstElementChild as HTMLDivElement
-    ).style.transform = `translate(${x}px, ${y}px)`;
+    (lastElement.firstElementChild as HTMLDivElement).style.transform = `translate(${x}px, ${y}px)`;
 
     moved.current = [selected, position];
 
@@ -84,8 +80,7 @@ function App() {
         start,
         end,
         chessType: data[end]!.type,
-        firster: first,
-        ownner: player,
+        player: playing,
       });
     }
 
@@ -94,17 +89,14 @@ function App() {
 
   return (
     <Checkerboard>
-      <VirtualChessBoard
-        ref={containerRef}
-        onTransitionEnd={debounce(onTransition)}
-      >
+      <VirtualChessBoard ref={containerRef} onTransitionEnd={debounce(onTransition)}>
         {batchRender(90).map((item) => (
           <VirtualItem key={item}>
             <RenderChess
               position={item}
               selected={selected}
               next={next.includes(item)}
-              first={first}
+              first={playing}
               item={data[item]}
               onClick={() => selectChess(data[item]!)}
               onNext={onNext}

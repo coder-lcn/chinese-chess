@@ -1,4 +1,4 @@
 /// <reference types="vite/client" />
 
 type Mark = "lt" | "lb" | "rt" | "rb";
-type Ownner = "a" | "b";
+type Ownner = "红" | "黑";

@@ -26,7 +26,7 @@ export const RenderChess = ({
   if (!item) return null;
   if (item.alive === false) return null;
 
-  const isFirst = item.ownner === first;
+  const isFirst = item.playing === first;
 
   const renderChessName = useMemo(() => {
     if (isFirst) {

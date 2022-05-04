@@ -14,5 +14,5 @@ export interface ChessItem {
   type: ChessType;
   alive: boolean;
   currPostion: number;
-  ownner: Ownner;
+  playing: Ownner;
 }

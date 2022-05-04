@@ -19,16 +19,9 @@ export const debounce = (callback: () => void) => {
 };
 
 const DESC = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
-export const ChessLog = (props: {
-  start: number;
-  end: number;
-  chessType: ChessType;
-  ownner: Ownner;
-  firster: Ownner;
-}) => {
-  const player = props.firster === props.ownner ? "红" : "黑";
+export const ChessLog = (props: { start: number; end: number; chessType: ChessType; player: Ownner }) => {
   const { start, end } = props;
-  const isRed = player === "红";
+  const isRed = props.player === "红";
 
   let log = "";
 
@@ -44,3 +37,16 @@ export const ChessLog = (props: {
 
   console.log(log, `color: ${isRed ? "red" : "#000"}`);
 };
+
+/**
+ * 前进或后退一行
+ *
+ * @param startPoint 起点
+ * @returns 目标行的位置
+ */
+export const toOneRow = (startPoint: number, toFront: boolean) => {
+  return toFront ? startPoint - 9 : startPoint + 9;
+};
+
+// 去第几列
+export const toCol = () => {};
