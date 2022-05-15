@@ -19,7 +19,7 @@ export const debounce = (callback: () => void) => {
 };
 
 const DESC = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
-export const ChessLog = (props: { start: number; end: number; chessType: ChessType; player: Ownner }) => {
+export const ChessLog = (props: { start: number; end: number; chessType: ChessType; player: Player }) => {
   const { start, end } = props;
   const isRed = props.player === "红";
 
@@ -32,7 +32,11 @@ export const ChessLog = (props: { start: number; end: number; chessType: ChessTy
     let action = start > end ? "进" : "退";
     log = `%c [红] ${props.chessType}${DESC[x]}${action}${DESC[y]}`;
   } else {
-    log = `%c [黑] ${props.chessType}`;
+    const x = 8 - (start % 9);
+    const y = Math.abs((start - end) / 9 - 1);
+
+    let action = start < end ? "进" : "退";
+    log = `%c [黑] ${props.chessType}${DESC[x]}${action}${DESC[y]}`;
   }
 
   console.log(log, `color: ${isRed ? "red" : "#000"}`);

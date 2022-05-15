@@ -7,13 +7,14 @@ import { useChess } from "./useChess";
 import { batchRender, debounce, ChessLog, toOneRow } from "./utils";
 
 function App() {
-  const { data, playing, next, setNext, selected, setSelected, setPlaying } = useChess();
+  const { data, playing, next, setNext, selected, setSelected, setData } = useChess();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const moved = useRef<[number, number] | null>(null);
   // 棋子正在移动
   const loading = useRef(false);
 
   const selectChess = (item: ChessItem) => {
+    if (item.player !== playing.current) return;
     if (loading.current) return;
 
     loading.current = true;
@@ -23,7 +24,6 @@ function App() {
     switch (item.type) {
       case "兵": {
         const targetPosition = toOneRow(item.currPostion, true);
-
         if (targetPosition >= 0) {
           setNext([targetPosition]);
         }
@@ -67,6 +67,10 @@ function App() {
     setNext([]);
   };
 
+  const moveOver = () => {
+    playing.current = playing.current === "红" ? "黑" : "红";
+  };
+
   const onTransition = () => {
     loading.current = false;
 
@@ -75,13 +79,16 @@ function App() {
 
       data[end] = data[start];
       data[start] = null;
+      setData({ ...data });
 
       ChessLog({
         start,
         end,
         chessType: data[end]!.type,
-        player: playing,
+        player: playing.current,
       });
+
+      moveOver();
     }
 
     moved.current = null;
@@ -96,7 +103,6 @@ function App() {
               position={item}
               selected={selected}
               next={next.includes(item)}
-              first={playing}
               item={data[item]}
               onClick={() => selectChess(data[item]!)}
               onNext={onNext}

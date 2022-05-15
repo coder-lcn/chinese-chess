@@ -1,60 +1,52 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ChessItem } from "./types";
 
-const initData: Record<number, ChessItem | null> = {
+// 后手
+const after: Record<number, ChessItem | null> = {
   0: {
     type: "車",
     currPostion: 0,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   1: {
     type: "馬",
     currPostion: 1,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   2: {
     type: "象",
     currPostion: 2,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   3: {
     type: "士",
     currPostion: 3,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   4: {
     type: "将",
     currPostion: 4,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   5: {
     type: "士",
     currPostion: 5,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   6: {
     type: "象",
     currPostion: 6,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   7: {
     type: "馬",
     currPostion: 7,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   8: {
     type: "車",
     currPostion: 8,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   9: null,
   10: null,
@@ -69,8 +61,7 @@ const initData: Record<number, ChessItem | null> = {
   19: {
     type: "炮",
     currPostion: 19,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   20: null,
   21: null,
@@ -80,44 +71,146 @@ const initData: Record<number, ChessItem | null> = {
   25: {
     type: "炮",
     currPostion: 25,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   26: null,
   27: {
-    type: "兵",
+    type: "卒",
     currPostion: 27,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   28: null,
   29: {
-    type: "兵",
+    type: "卒",
     currPostion: 29,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   30: null,
   31: {
-    type: "兵",
+    type: "卒",
     currPostion: 31,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   32: null,
   33: {
-    type: "兵",
+    type: "卒",
     currPostion: 33,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
   34: null,
   35: {
-    type: "兵",
+    type: "卒",
     currPostion: 35,
-    alive: true,
-    playing: "红",
+    player: "黑",
   },
+};
+
+// 先手
+const before: Record<number, ChessItem | null> = {
+  54: {
+    type: "兵",
+    currPostion: 54,
+    player: "红",
+  },
+  55: null,
+  56: {
+    type: "兵",
+    currPostion: 56,
+    player: "红",
+  },
+  57: null,
+  58: {
+    type: "兵",
+    currPostion: 58,
+    player: "红",
+  },
+  59: null,
+  60: {
+    type: "兵",
+    currPostion: 60,
+    player: "红",
+  },
+  61: null,
+  62: {
+    type: "兵",
+    currPostion: 62,
+    player: "红",
+  },
+  63: null,
+  64: {
+    type: "炮",
+    currPostion: 64,
+    player: "红",
+  },
+  65: null,
+  66: null,
+  67: null,
+  68: null,
+  69: null,
+  70: {
+    type: "炮",
+    currPostion: 70,
+    player: "红",
+  },
+  71: null,
+  72: null,
+  73: null,
+  74: null,
+  75: null,
+  76: null,
+  77: null,
+  78: null,
+  79: null,
+  80: null,
+  81: {
+    type: "車",
+    currPostion: 81,
+    player: "红",
+  },
+  82: {
+    type: "馬",
+    currPostion: 82,
+    player: "红",
+  },
+  83: {
+    type: "相",
+    currPostion: 83,
+    player: "红",
+  },
+  84: {
+    type: "士",
+    currPostion: 84,
+    player: "红",
+  },
+  85: {
+    type: "帥",
+    currPostion: 85,
+    player: "红",
+  },
+  86: {
+    type: "士",
+    currPostion: 86,
+    player: "红",
+  },
+  87: {
+    type: "相",
+    currPostion: 87,
+    player: "红",
+  },
+  88: {
+    type: "馬",
+    currPostion: 88,
+    player: "红",
+  },
+  89: {
+    type: "車",
+    currPostion: 89,
+    player: "红",
+  },
+};
+
+const initData: Record<number, ChessItem | null> = {
+  ...after,
   36: null,
   37: null,
   38: null,
@@ -136,129 +229,14 @@ const initData: Record<number, ChessItem | null> = {
   51: null,
   52: null,
   53: null,
-  54: {
-    type: "兵",
-    currPostion: 54,
-    alive: true,
-    playing: "黑",
-  },
-  55: null,
-  56: {
-    type: "兵",
-    currPostion: 56,
-    alive: true,
-    playing: "黑",
-  },
-  57: null,
-  58: {
-    type: "兵",
-    currPostion: 58,
-    alive: true,
-    playing: "黑",
-  },
-  59: null,
-  60: {
-    type: "兵",
-    currPostion: 60,
-    alive: true,
-    playing: "黑",
-  },
-  61: null,
-  62: {
-    type: "兵",
-    currPostion: 62,
-    alive: true,
-    playing: "黑",
-  },
-  63: null,
-  64: {
-    type: "炮",
-    currPostion: 64,
-    alive: true,
-    playing: "黑",
-  },
-  65: null,
-  66: null,
-  67: null,
-  68: null,
-  69: null,
-  70: {
-    type: "炮",
-    currPostion: 70,
-    alive: true,
-    playing: "黑",
-  },
-  71: null,
-  72: null,
-  73: null,
-  74: null,
-  75: null,
-  76: null,
-  77: null,
-  78: null,
-  79: null,
-  80: null,
-  81: {
-    type: "車",
-    currPostion: 81,
-    alive: true,
-    playing: "黑",
-  },
-  82: {
-    type: "馬",
-    currPostion: 82,
-    alive: true,
-    playing: "黑",
-  },
-  83: {
-    type: "象",
-    currPostion: 83,
-    alive: true,
-    playing: "黑",
-  },
-  84: {
-    type: "士",
-    currPostion: 84,
-    alive: true,
-    playing: "黑",
-  },
-  85: {
-    type: "将",
-    currPostion: 85,
-    alive: true,
-    playing: "黑",
-  },
-  86: {
-    type: "士",
-    currPostion: 86,
-    alive: true,
-    playing: "黑",
-  },
-  87: {
-    type: "象",
-    currPostion: 87,
-    alive: true,
-    playing: "黑",
-  },
-  88: {
-    type: "馬",
-    currPostion: 88,
-    alive: true,
-    playing: "黑",
-  },
-  89: {
-    type: "車",
-    currPostion: 89,
-    alive: true,
-    playing: "黑",
-  },
+  ...before,
 };
 
 export const useChess = () => {
   const [data, setData] = useState<Record<number, ChessItem | null>>(initData);
-  const [playing, setPlaying] = useState<Ownner>("黑");
   const [next, setNext] = useState<number[]>([]);
   const [selected, setSelected] = useState<number>(-1);
+  const playing = useRef<Player>("红");
 
   return {
     data,
@@ -268,6 +246,5 @@ export const useChess = () => {
     setSelected,
     setNext,
     setData,
-    setPlaying,
   };
 };

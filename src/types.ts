@@ -12,7 +12,6 @@ export type ChessType =
 
 export interface ChessItem {
   type: ChessType;
-  alive: boolean;
   currPostion: number;
-  playing: Ownner;
+  player: Player;
 }

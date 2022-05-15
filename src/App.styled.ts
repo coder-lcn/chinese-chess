@@ -170,7 +170,7 @@ export const Chess = styled.div<{ first: boolean; selected: boolean }>`
   box-shadow: 4px 4px 4px #a49e9e;
   cursor: pointer;
   font-size: 24px;
-  transition: all 0.1s linear;
+  transition: all 0.2s linear;
 
   &::before {
     content: "";
