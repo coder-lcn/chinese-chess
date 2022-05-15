@@ -256,7 +256,7 @@ const initData: Record<number, ChessItem | null> = {
 
 export const useChess = () => {
   const [data, setData] = useState<Record<number, ChessItem | null>>(initData);
-  const [playing, setPlaying] = useState<Ownner>("红");
+  const [playing, setPlaying] = useState<Ownner>("黑");
   const [next, setNext] = useState<number[]>([]);
   const [selected, setSelected] = useState<number>(-1);
 
