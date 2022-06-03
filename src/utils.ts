@@ -23,16 +23,22 @@ export const ChessLog = (props: { start: number; end: number; chessType: ChessTy
   const { start, end } = props;
   const isRed = props.player === "红";
   const y = Math.abs(start - end) / 9 - 1;
+  const movedRow = Math.abs(start - end) === 9;
+  let action = '';
 
   let log = "";
 
   if (isRed) {
-    const x = 8 - (start % 9);
-    let action = start > end ? "进" : "退";
-    log = `%c [红] ${props.chessType}${DESC[x]}${action}${DESC[y]}`;
+    if (movedRow) {
+      const x = 8 - (start % 9);
+      action = start > end ? "进" : "退";
+      log = `%c [红] ${props.chessType}${DESC[x]}${action}${DESC[y]}`;
+    } else {
+      // 
+    }
   } else {
     const x = 8 - (start % 9);
-    let action = start < end ? "进" : "退";
+    action = start < end ? "进" : "退";
     log = `%c [黑] ${props.chessType}${DESC[8 - x]}${action}${DESC[y]}`;
   }
 
@@ -63,8 +69,6 @@ export const toOneCol = (startPoint: number, type: '兵' | '卒') => {
   const blackCrossedRiver = !criticalPoint;
 
   const filterCritical = (target: number[]) => {
-    console.log(target);
-
     return target.filter((item, i) => {
       if (item === 0) return true;
 
@@ -89,3 +93,6 @@ export const toOneCol = (startPoint: number, type: '兵' | '卒') => {
 
 // 去第几列
 export const toCol = () => { };
+
+// 去第几行
+export const toRow = () => { }
