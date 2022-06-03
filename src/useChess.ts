@@ -233,7 +233,7 @@ const initData: Record<number, ChessItem | null> = {
 };
 
 export const useChess = () => {
-  const [data, setData] = useState<Record<number, ChessItem | null>>(initData);
+  const [data, setData] = useState<Record<number, ChessItem | null>>({ ...initData });
   const [next, setNext] = useState<number[]>([]);
   const [selected, setSelected] = useState<number>(-1);
   const playing = useRef<Player>("红");

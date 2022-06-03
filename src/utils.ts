@@ -22,24 +22,21 @@ const DESC = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
 export const ChessLog = (props: { start: number; end: number; chessType: ChessType; player: Player }) => {
   const { start, end } = props;
   const isRed = props.player === "红";
+  const y = Math.abs(start - end) / 9 - 1;
 
   let log = "";
 
   if (isRed) {
     const x = 8 - (start % 9);
-    const y = Math.abs((start - end) / 9 - 1);
-
     let action = start > end ? "进" : "退";
     log = `%c [红] ${props.chessType}${DESC[x]}${action}${DESC[y]}`;
   } else {
     const x = 8 - (start % 9);
-    const y = Math.abs((start - end) / 9 - 1);
-
     let action = start < end ? "进" : "退";
-    log = `%c [黑] ${props.chessType}${DESC[x]}${action}${DESC[y]}`;
+    log = `%c [黑] ${props.chessType}${DESC[8 - x]}${action}${DESC[y]}`;
   }
 
-  console.log(log, `color: ${isRed ? "red" : "#000"}`);
+  console.log(log, `color: ${isRed ? "red" : "#fff"}`);
 };
 
 /**
@@ -53,4 +50,4 @@ export const toOneRow = (startPoint: number, toFront: boolean) => {
 };
 
 // 去第几列
-export const toCol = () => {};
+export const toCol = () => { };

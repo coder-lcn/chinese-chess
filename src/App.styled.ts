@@ -155,41 +155,14 @@ export const VirtualItem = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-export const Chess = styled.div<{ first: boolean; selected: boolean }>`
   position: relative;
-  background-color: #ccc;
-  width: 75%;
-  height: 75%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 100%;
-  color: ${({ first }) => (first ? "red" : "#000")};
-  box-shadow: 4px 4px 4px #a49e9e;
-  cursor: pointer;
-  font-size: 24px;
-  transition: all 0.2s linear;
 
-  &::before {
-    content: "";
+  span{
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 80%;
-    border-radius: 100%;
-    border: 1px solid ${({ first }) => (first ? "red" : "#000")};
+    left:50%;
+    top:50%;
+    transform: translate(-50%,-50%);
   }
-
-  ${({ selected }) =>
-    selected &&
-    css`
-      transform: translate(-2px, -6px);
-      box-shadow: 8px 8px 8px #a49e9e;
-    `}
 `;
 
 export const Next = styled.div`
@@ -209,3 +182,49 @@ export const Next = styled.div`
     border-radius: 100%;
   }
 `;
+
+
+export const Chess = styled.div<{ first: boolean; selected: boolean; }>`
+  position: relative;
+  background-color: #ccc;
+  width: 75%;
+  height: 75%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  color: ${({ first }) => (first ? "red" : "#000")};
+  box-shadow: 4px 4px 4px #a49e9e;
+  cursor: pointer;
+  font-size: 24px;
+  transition: all 0.2s linear;
+  z-index: 10;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    border-radius: 100%;
+    border: 1px solid ${({ first }) => (first ? "red" : "#000")};
+  }
+
+  ${({ selected }) =>
+    selected &&
+    css`
+      transform: translate(-2px, -6px);
+      box-shadow: 8px 8px 8px #a49e9e;
+    `}
+
+  ${Next} {
+    position: absolute;
+    
+    &::before{
+      background-color: red;
+    }
+  }
+`;
+

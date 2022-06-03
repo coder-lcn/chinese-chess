@@ -10,10 +10,11 @@ function App() {
   const { data, playing, next, setNext, selected, setSelected, setData } = useChess();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const moved = useRef<[number, number] | null>(null);
-  // 棋子正在移动
   const loading = useRef(false);
+  const lossedChessItem = useRef<ChessItem | null>(null);
 
   const selectChess = (item: ChessItem) => {
+    if (item.currPostion === selected) return;
     if (item.player !== playing.current) return;
     if (loading.current) return;
 
@@ -46,8 +47,9 @@ function App() {
     const nextElement = containerRef.current.children[position];
     if (!nextElement) return;
 
-    const lastElement = containerRef.current.children[selected];
+    const lastElement = containerRef.current.children[selected] as HTMLDivElement;
     if (!lastElement) return;
+    lastElement.style.zIndex = (+getComputedStyle(nextElement, null).zIndex || 0) + 100 + "";
 
     const { left: targetLeft, top: targetTop } = nextElement.firstElementChild!.getBoundingClientRect();
 
@@ -67,8 +69,21 @@ function App() {
     setNext([]);
   };
 
-  const moveOver = () => {
-    playing.current = playing.current === "红" ? "黑" : "红";
+  const GameOver = () => {
+    moved.current = null;
+    loading.current = false;
+    lossedChessItem.current = null;
+  };
+
+  const checkResult = () => {
+    if (!lossedChessItem.current) return;
+
+    const { type } = lossedChessItem.current;
+    const gameOver = type === "将" || type === "帥";
+    if (gameOver) {
+      alert(`恭喜${playing.current === "红" ? "黑" : "红"}方获胜！！！`);
+      location.reload();
+    }
   };
 
   const onTransition = () => {
@@ -77,9 +92,9 @@ function App() {
     if (moved.current && moved.current.length === 2) {
       const [start, end] = moved.current;
 
+      data[start]!.currPostion = end;
       data[end] = data[start];
       data[start] = null;
-      setData({ ...data });
 
       ChessLog({
         start,
@@ -88,10 +103,17 @@ function App() {
         player: playing.current,
       });
 
-      moveOver();
+      playing.current = playing.current === "红" ? "黑" : "红";
+      setData({ ...data });
+      checkResult();
     }
 
     moved.current = null;
+  };
+
+  const onEat = (to: ChessItem) => {
+    onNext(to.currPostion);
+    lossedChessItem.current = to;
   };
 
   return (
@@ -106,6 +128,7 @@ function App() {
               item={data[item]}
               onClick={() => selectChess(data[item]!)}
               onNext={onNext}
+              onEat={onEat}
             />
           </VirtualItem>
         ))}
