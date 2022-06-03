@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { VirtualChessBoard, VirtualItem } from "./App.styled";
 import { Checkerboard } from "./checkerboard";
 import { RenderChess } from "./renderChess";
@@ -26,11 +26,10 @@ function App() {
       case "兵": {
         const targetPosition = toOneRow(item.currPostion, true);
         const cols = toOneCol(item.currPostion, item.type);
-
         if (targetPosition >= 0) {
           setNext([targetPosition, ...cols]);
         } else {
-          setNext(cols)
+          setNext(cols);
         }
         break;
       }
@@ -41,6 +40,9 @@ function App() {
           setNext([targetPosition, ...cols]);
         }
         break;
+      }
+      case "士": {
+        
       }
     }
   };
@@ -115,6 +117,22 @@ function App() {
     lossedChessItem.current = to;
   };
 
+  // 在 next 路径集合中，过滤掉己方的路径
+  const filterPartner = useMemo(() => {
+    return next.filter((item) => {
+      const chess = data[item];
+      if (chess) {
+        if (chess.player === playing.current) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    });
+  }, [next]);
+
   return (
     <Checkerboard>
       <VirtualChessBoard ref={containerRef} onTransitionEnd={debounce(onTransition)}>
@@ -123,7 +141,7 @@ function App() {
             <RenderChess
               position={item}
               selected={selected}
-              next={next.includes(item)}
+              next={filterPartner.includes(item)}
               item={data[item]}
               onClick={() => selectChess(data[item]!)}
               onNext={onNext}
