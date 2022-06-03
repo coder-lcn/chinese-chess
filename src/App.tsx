@@ -4,7 +4,7 @@ import { Checkerboard } from "./checkerboard";
 import { RenderChess } from "./renderChess";
 import { ChessItem } from "./types";
 import { useChess } from "./useChess";
-import { batchRender, debounce, ChessLog, toOneRow } from "./utils";
+import { batchRender, debounce, ChessLog, toOneRow, toOneCol } from "./utils";
 
 function App() {
   const { data, playing, next, setNext, selected, setSelected, setData } = useChess();
@@ -25,15 +25,20 @@ function App() {
     switch (item.type) {
       case "兵": {
         const targetPosition = toOneRow(item.currPostion, true);
+        const cols = toOneCol(item.currPostion, item.type);
+
         if (targetPosition >= 0) {
-          setNext([targetPosition]);
+          setNext([targetPosition, ...cols]);
+        } else {
+          setNext(cols)
         }
         break;
       }
       case "卒": {
         const targetPosition = toOneRow(item.currPostion, false);
+        const cols = toOneCol(item.currPostion, item.type);
         if (targetPosition >= 0) {
-          setNext([targetPosition]);
+          setNext([targetPosition, ...cols]);
         }
         break;
       }
@@ -49,7 +54,7 @@ function App() {
 
     const lastElement = containerRef.current.children[selected] as HTMLDivElement;
     if (!lastElement) return;
-    lastElement.style.zIndex = (+getComputedStyle(nextElement, null).zIndex || 0) + 100 + "";
+    lastElement.style.zIndex = (+getComputedStyle(nextElement, null).zIndex || 0) + 100 + ""; // 确保要移动的棋子始终在视图上面
 
     const { left: targetLeft, top: targetTop } = nextElement.firstElementChild!.getBoundingClientRect();
 
@@ -67,12 +72,6 @@ function App() {
 
     setSelected(-1);
     setNext([]);
-  };
-
-  const GameOver = () => {
-    moved.current = null;
-    loading.current = false;
-    lossedChessItem.current = null;
   };
 
   const checkResult = () => {
