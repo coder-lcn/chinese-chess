@@ -141,11 +141,7 @@ function App() {
     return next.filter((item) => {
       const chess = data[item];
       if (chess) {
-        if (chess.player === playing.current) {
-          return false;
-        } else {
-          return true;
-        }
+        return chess.player !== playing.current;
       } else {
         return true;
       }

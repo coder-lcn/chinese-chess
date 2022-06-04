@@ -20,29 +20,44 @@ export const debounce = (callback: () => void) => {
 
 const DESC = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
 export const ChessLog = (props: { start: number; end: number; chessType: ChessType; player: Player }) => {
-  const { start, end } = props;
+  const { start, end, chessType } = props;
+  const colMoved = Math.abs(start - end);
   const isRed = props.player === "红";
-  const y = Math.abs(start - end) / 9 - 1;
-  const movedRow = Math.abs(start - end) === 9;
-  let action = '';
+  const x = 8 - (start % 9);
+  const y = colMoved / 9 - 1;
+  const movedRow = colMoved === 9;
+  const soldierMoved = colMoved === 8 || colMoved === 10;
 
+  let action = '';
   let log = "";
 
   if (isRed) {
     if (movedRow) {
-      const x = 8 - (start % 9);
       action = start > end ? "进" : "退";
       log = `%c [红] ${props.chessType}${DESC[x]}${action}${DESC[y]}`;
     } else {
-      // 
+      action = '平';
+      if (soldierMoved) {
+        action = start > end ? '进' : '退'
+      }
+      const i = 8 - end % 9;
+      log = `%c [红] ${props.chessType}${DESC[x]}${action}${DESC[i]}`;
     }
   } else {
-    const x = 8 - (start % 9);
-    action = start < end ? "进" : "退";
-    log = `%c [黑] ${props.chessType}${DESC[8 - x]}${action}${DESC[y]}`;
+    if (movedRow) {
+      action = start < end ? "进" : "退";
+      log = `%c [黑] ${props.chessType}${DESC[8 - x]}${action}${DESC[y]}`;
+    } else {
+      action = '平';
+      if (soldierMoved) {
+        action = start > end ? '退' : '进';
+      }
+      const i = end % 9;
+      log = `%c [红] ${props.chessType}${DESC[8 - x]}${action}${DESC[i]}`;
+    }
   }
 
-  console.log(log, `color: ${isRed ? "red" : "#fff"}`);
+  console.log(log, `color: ${isRed ? "red" : "#000"}`);
 };
 
 /**
