@@ -18,14 +18,16 @@ function App() {
     if (item.player !== playing.current) return;
     if (loading.current) return;
 
+    const position = item.currPostion;
+
     loading.current = true;
     setNext([]);
-    setSelected(item.currPostion);
+    setSelected(position);
 
     switch (item.type) {
       case "兵": {
-        const targetPosition = toOneRow(item.currPostion, true);
-        const cols = toOneCol(item.currPostion, item.type);
+        const targetPosition = toOneRow(position, true);
+        const cols = toOneCol(position, item.type);
         if (targetPosition >= 0) {
           setNext([targetPosition, ...cols]);
         } else {
@@ -34,15 +36,32 @@ function App() {
         break;
       }
       case "卒": {
-        const targetPosition = toOneRow(item.currPostion, false);
-        const cols = toOneCol(item.currPostion, item.type);
+        const targetPosition = toOneRow(position, false);
+        const cols = toOneCol(position, item.type);
         if (targetPosition >= 0) {
           setNext([targetPosition, ...cols]);
         }
         break;
       }
       case "士": {
-        
+        const steps: number[] = [];
+
+        if (playing.current === "红") {
+          if (position === 76) {
+            steps.push(66, 68, 84, 86);
+          } else {
+            steps.push(76);
+          }
+        } else {
+          if (position === 13) {
+            steps.push(3, 5, 21, 23);
+          } else {
+            steps.push(13);
+          }
+        }
+
+        setNext(steps);
+        break;
       }
     }
   };
