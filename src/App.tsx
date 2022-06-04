@@ -12,6 +12,7 @@ function App() {
   const moved = useRef<[number, number] | null>(null);
   const loading = useRef(false);
   const lossedChessItem = useRef<ChessItem | null>(null);
+  const debug = location.search.indexOf("debug") !== -1;
 
   const selectChess = (item: ChessItem) => {
     if (item.currPostion === selected) return;
@@ -61,6 +62,59 @@ function App() {
         }
 
         setNext(steps);
+        break;
+      }
+      case "相": {
+        const newPosition = [position - 16, position + 16, position - 20, position + 20]
+          .filter((item) => item > 46 && item < 88)
+          .filter((item) => item !== 79 && item !== 73 && item !== 55);
+        setNext(newPosition);
+        break;
+      }
+      case "象": {
+        const newPosition = [position - 16, position + 16, position - 20, position + 20]
+          .filter((item) => item > 1 && item < 43)
+          .filter((item) => item !== 10 && item !== 34);
+        setNext(newPosition);
+        break;
+      }
+      case "炮":
+      case "車": {
+        const currPosition = position % 9;
+        const next: number[] = [];
+
+        let markLeftPosition = position;
+        let markRightPosition = position;
+        let markTopPosition = position;
+        let markBottomPosition = position;
+
+        let left = currPosition;
+        let right = currPosition;
+
+        while (left > 0) {
+          next.push(markLeftPosition - 1);
+          markLeftPosition--;
+          left--;
+        }
+
+        while (right < 8) {
+          next.push(markRightPosition + 1);
+          markRightPosition++;
+          right++;
+        }
+
+        while (markTopPosition - 9 > 0) {
+          next.push(markTopPosition - 9);
+          markTopPosition -= 9;
+        }
+
+        while (markBottomPosition + 9 < 90) {
+          next.push(markBottomPosition + 9);
+          markBottomPosition += 9;
+        }
+
+        setNext(next);
+
         break;
       }
     }
@@ -151,8 +205,9 @@ function App() {
   return (
     <Checkerboard>
       <VirtualChessBoard ref={containerRef} onTransitionEnd={debounce(onTransition)}>
-        {batchRender(90).map((item) => (
+        {batchRender(90).map((item, i) => (
           <VirtualItem key={item}>
+            {debug && <span>{i}</span>}
             <RenderChess
               position={item}
               selected={selected}
