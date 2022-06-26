@@ -14,6 +14,16 @@ function App() {
   const lossedChessItem = useRef<ChessItem | null>(null);
   const debug = location.search.indexOf("debug") !== -1;
 
+  const filter炮 = (target: number[]) => {
+    console.log(target, playing);
+    return target;
+  };
+
+  const filter车 = (target: number[]) => {
+    console.log(target);
+    return target;
+  };
+
   const selectChess = (item: ChessItem) => {
     if (item.currPostion === selected) return;
     if (item.player !== playing.current) return;
@@ -113,7 +123,17 @@ function App() {
           markBottomPosition += 9;
         }
 
-        setNext(next);
+        let resut: number[] = [...next];
+
+        if (item.type === "炮") {
+          resut = filter炮(next);
+        }
+
+        if (item.type === "車") {
+          resut = filter车(next);
+        }
+
+        setNext(resut);
 
         break;
       }
