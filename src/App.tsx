@@ -14,16 +14,6 @@ function App() {
   const lossedChessItem = useRef<ChessItem | null>(null);
   const debug = location.search.indexOf("debug") !== -1;
 
-  const filter炮 = (target: number[]) => {
-    console.log(target, playing);
-    return target;
-  };
-
-  const filter车 = (target: number[]) => {
-    console.log(target);
-    return target;
-  };
-
   const selectChess = (item: ChessItem) => {
     if (item.currPostion === selected) return;
     if (item.player !== playing.current) return;
@@ -101,39 +91,94 @@ function App() {
         let left = currPosition;
         let right = currPosition;
 
+        const 炮: Record<Position, { 炮架: ChessItem | null; enemy: ChessItem | null }> = {
+          上: {
+            炮架: null,
+            enemy: null,
+          },
+          右: {
+            炮架: null,
+            enemy: null,
+          },
+          下: {
+            炮架: null,
+            enemy: null,
+          },
+          左: {
+            炮架: null,
+            enemy: null,
+          },
+        };
+
+        const 车: Record<Position, ChessItem | null> = {
+          上: null,
+          右: null,
+          下: null,
+          左: null,
+        };
+
+        const filter_炮 = (index: number, pos: Position) => {
+          if (item.type !== "炮") return;
+
+          const target = data[index];
+
+          if (炮[pos].炮架) {
+            if (!炮[pos].enemy && target) {
+              next.push(index);
+              炮[pos].enemy = target;
+            }
+          } else {
+            if (target) {
+              炮[pos].炮架 = target;
+            } else {
+              next.push(index);
+            }
+          }
+        };
+
+        const filter_车 = (index: number, pos: Position) => {
+          if (item.type !== "車") return;
+          const target = data[index];
+          if (车[pos]) return;
+
+          if (!车[pos] && target) {
+            车[pos] = target;
+          }
+
+          next.push(index);
+        };
+
         while (left > 0) {
-          next.push(markLeftPosition - 1);
+          const index = markLeftPosition - 1;
+          filter_炮(index, "左");
+          filter_车(index, "左");
           markLeftPosition--;
           left--;
         }
 
         while (right < 8) {
-          next.push(markRightPosition + 1);
+          const index = markRightPosition + 1;
+          filter_炮(index, "右");
+          filter_车(index, "右");
           markRightPosition++;
           right++;
         }
 
         while (markTopPosition - 9 > 0) {
-          next.push(markTopPosition - 9);
+          const index = markTopPosition - 9;
+          filter_炮(index, "上");
+          filter_车(index, "上");
           markTopPosition -= 9;
         }
 
         while (markBottomPosition + 9 < 90) {
-          next.push(markBottomPosition + 9);
+          const index = markBottomPosition + 9;
+          filter_炮(index, "下");
+          filter_车(index, "下");
           markBottomPosition += 9;
         }
 
-        let resut: number[] = [...next];
-
-        if (item.type === "炮") {
-          resut = filter炮(next);
-        }
-
-        if (item.type === "車") {
-          resut = filter车(next);
-        }
-
-        setNext(resut);
+        setNext(next);
 
         break;
       }
