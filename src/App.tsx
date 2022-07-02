@@ -4,7 +4,7 @@ import { Checkerboard } from "./checkerboard";
 import { RenderChess } from "./renderChess";
 import { ChessItem } from "./types";
 import { useChess } from "./useChess";
-import { batchRender, debounce, ChessLog, toOneRow, toOneCol } from "./utils";
+import { batchRender, debounce, ChessLog, toOneRow, toOneCol, bossPosition } from "./utils";
 
 function App() {
   const { data, playing, next, setNext, selected, setSelected, setData } = useChess();
@@ -180,6 +180,17 @@ function App() {
 
         setNext(next);
 
+        break;
+      }
+      case "帥":
+      case "将": {
+        const top = item.type === "将" ? position + 9 : position - 9;
+        const left = position - 1;
+        const right = position + 1;
+        const bottom = item.type === "将" ? position - 9 : position + 9;
+
+        const next = bossPosition([top, left, right, bottom]);
+        setNext(next);
         break;
       }
     }

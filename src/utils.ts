@@ -1,5 +1,39 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { ChessType } from "./types";
+
+// 将和帥可以移动的位置
+const bossSupportedPosition: Record<number, boolean> = {
+  3: true,
+  4: true,
+  5: true,
+  12: true,
+  13: true,
+  14: true,
+  21: true,
+  22: true,
+  23: true,
+  66: true,
+  67: true,
+  68: true,
+  75: true,
+  76: true,
+  77: true,
+  84: true,
+  85: true,
+  86: true,
+};
+
+export const bossPosition = (pos: number[]) => {
+  const result: number[] = [];
+
+  pos.forEach((item) => {
+    if (bossSupportedPosition[item]) {
+      result.push(item);
+    }
+  });
+
+  return result;
+};
 
 export const batchRender = (num: number) =>
   Array(num)
@@ -28,7 +62,7 @@ export const ChessLog = (props: { start: number; end: number; chessType: ChessTy
   const movedRow = colMoved === 9;
   const soldierMoved = colMoved === 8 || colMoved === 10;
 
-  let action = '';
+  let action = "";
   let log = "";
 
   if (isRed) {
@@ -36,11 +70,11 @@ export const ChessLog = (props: { start: number; end: number; chessType: ChessTy
       action = start > end ? "进" : "退";
       log = `%c [红] ${props.chessType}${DESC[x]}${action}${DESC[y]}`;
     } else {
-      action = '平';
+      action = "平";
       if (soldierMoved) {
-        action = start > end ? '进' : '退'
+        action = start > end ? "进" : "退";
       }
-      const i = 8 - end % 9;
+      const i = 8 - (end % 9);
       log = `%c [红] ${props.chessType}${DESC[x]}${action}${DESC[i]}`;
     }
   } else {
@@ -48,9 +82,9 @@ export const ChessLog = (props: { start: number; end: number; chessType: ChessTy
       action = start < end ? "进" : "退";
       log = `%c [黑] ${props.chessType}${DESC[8 - x]}${action}${DESC[y]}`;
     } else {
-      action = '平';
+      action = "平";
       if (soldierMoved) {
-        action = start > end ? '退' : '进';
+        action = start > end ? "退" : "进";
       }
       const i = end % 9;
       log = `%c [红] ${props.chessType}${DESC[8 - x]}${action}${DESC[i]}`;
@@ -78,7 +112,7 @@ export const toOneRow = (startPoint: number, toFront: boolean) => {
  * @param type 兵 ｜ 卒
  * @returns 目标行的位置
  */
-export const toOneCol = (startPoint: number, type: '兵' | '卒') => {
+export const toOneCol = (startPoint: number, type: "兵" | "卒") => {
   const criticalPoint = startPoint < 45;
   const redCrossedRiver = criticalPoint;
   const blackCrossedRiver = !criticalPoint;
@@ -94,20 +128,14 @@ export const toOneCol = (startPoint: number, type: '兵' | '卒') => {
       }
 
       return true;
-    })
-  }
+    });
+  };
 
-  if (type === '兵' && redCrossedRiver) {
+  if (type === "兵" && redCrossedRiver) {
     return filterCritical([startPoint - 1, startPoint + 1]);
-  } else if (type === '卒' && blackCrossedRiver) {
+  } else if (type === "卒" && blackCrossedRiver) {
     return filterCritical([startPoint - 1, startPoint + 1]);
   } else {
-    return []
+    return [];
   }
 };
-
-// 去第几列
-export const toCol = () => { };
-
-// 去第几行
-export const toRow = () => { }
