@@ -193,6 +193,44 @@ function App() {
         setNext(next);
         break;
       }
+      case "馬": {
+        const next: number[] = [];
+
+        const top = position - 9;
+        const topTarget = Boolean(data[top]);
+        if (topTarget === false) {
+          const leftTop = position - 18 - 1;
+          const rightTop = position - 18 + 1;
+          next.push(leftTop, rightTop);
+        }
+
+        const left = position - 1;
+        const leftTarget = Boolean(data[left]);
+        if (leftTarget === false) {
+          const leftTop = position - 2 - 9;
+          const leftBottom = position - 2 + 9;
+          next.push(leftTop, leftBottom);
+        }
+
+        const bottom = position + 9;
+        const bottomTarget = Boolean(data[bottom]);
+        if (bottomTarget === false) {
+          const leftBottom = position + 18 - 1;
+          const rightBottom = position + 18 + 1;
+          next.push(rightBottom, leftBottom);
+        }
+
+        const right = position + 1;
+        const rightTarget = Boolean(data[right]);
+        if (rightTarget === false) {
+          const rightTop = position + 2 - 9;
+          const rightBottom = position + 2 + 9;
+          next.push(rightBottom, rightTop);
+        }
+
+        setNext(next);
+        break;
+      }
     }
   };
 
