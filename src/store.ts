@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import { ChessItem } from "./types";
 
 // 后手
@@ -232,19 +233,10 @@ const initData: Record<number, ChessItem | null> = {
   ...before,
 };
 
-export const useChess = () => {
-  const [data, setData] = useState<Record<number, ChessItem | null>>({ ...initData });
-  const [next, setNext] = useState<number[]>([]);
-  const [selected, setSelected] = useState<number>(-1);
-  const playing = useRef<Player>("红");
+export const allChessAtom = atomWithStorage<Record<number, ChessItem | null>>("all-chess", { ...initData });
 
-  return {
-    data,
-    playing,
-    next,
-    selected,
-    setSelected,
-    setNext,
-    setData,
-  };
-};
+export const reset = atom(null, (_, set) => {
+  set(allChessAtom, { ...initData });
+});
+
+export const player = atomWithStorage<Player>("player", "红");

@@ -1,17 +1,61 @@
-import { useMemo, useRef } from "react";
-import { VirtualChessBoard, VirtualItem } from "./App.styled";
+import { useAtom, useSetAtom } from "jotai";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Chess, Next, VirtualChessBoard, VirtualItem } from "./App.styled";
 import { Checkerboard } from "./checkerboard";
-import { RenderChess } from "./renderChess";
+import { allChessAtom, reset } from "./store";
 import { ChessItem } from "./types";
-import { useChess } from "./useChess";
-import { batchRender, debounce, ChessLog, toOneRow, toOneCol, bossPosition } from "./utils";
+import { batchRender, bossPosition, ChessLog, debounce, toOneCol, toOneRow } from "./utils";
+
+const RenderChess = ({
+  item,
+  next,
+  selected,
+  position,
+  onClick,
+  onNext,
+  onEat,
+}: {
+  item?: ChessItem | null;
+  next: boolean;
+  selected: number;
+  position: number;
+  onClick: () => void;
+  onNext: (position: number) => void;
+  onEat: (item: ChessItem) => void;
+}) => {
+  // 渲染行进路线
+  if (next && Boolean(item) === false) {
+    return <Next onClick={() => onNext(position)} />;
+  }
+
+  if (!item) return null;
+
+  return (
+    <Chess first={item.player === "红"} onClick={onClick} selected={item.currPostion === selected}>
+      {item.type}
+      {next && <Next onClick={() => onEat(item)} />}
+    </Chess>
+  );
+};
+
 
 function App() {
-  const { data, playing, next, setNext, selected, setSelected, setData } = useChess();
+  const [data, setData] = useAtom(allChessAtom);
+  const resetRound = useSetAtom(reset);
+
+  const [next, setNext] = useState<number[]>([]);
+  const [selected, setSelected] = useState<number>(-1);
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const moved = useRef<[number, number] | null>(null);
   const loading = useRef(false);
   const lossedChessItem = useRef<ChessItem | null>(null);
+  const playing = useRef<Player>(localStorage.getItem('playing') as Player || '红');
+
+  useEffect(() => {
+    localStorage.setItem('playing', playing.current);
+  }, [playing.current]);
+
   const debug = location.search.indexOf("debug") !== -1;
 
   const selectChess = (item: ChessItem) => {
@@ -270,6 +314,7 @@ function App() {
     const gameOver = type === "将" || type === "帥";
     if (gameOver) {
       alert(`恭喜${playing.current === "红" ? "黑" : "红"}方获胜！！！`);
+      resetRound();
       location.reload();
     }
   };
